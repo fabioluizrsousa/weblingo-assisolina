@@ -46,7 +46,7 @@ const MODULOS = [
         id:5, emoji:"📦", titulo:"Divs e Classes", cat:"Estrutura", xp:200,
         aula:{ intro:"<div> agrupa elementos e 'class' identifica-os para o CSS.", blocos:[{t:"cod",c:'<div class="caixa"></div>'}] },
         desafio:{ inst:"Crie uma `<div class='perfil'>` com um `<h2>` dentro.", starter:"<body>\n  \n</body>", dica:'<div class="perfil"><h2>...</h2></div>' },
-        validacao: [{ regex: /<div\s+class=["']perfil["']>.*?<h2/is, erro: "A div deve ter a classe 'perfil' e conter um <h2>." }],
+        validacao: [{ regex: /class\s*=\s*["']perfil["'][\s\S]*?<h2/i, erro: "A div deve ter a classe 'perfil' e conter um <h2>." }],
         explicacao: "A tag <div> é um container genérico. Ao usar classes, você cria 'ganchos' para o CSS estilizar blocos específicos."
       }
     ]
@@ -135,17 +135,23 @@ const MODULOS = [
 
 // ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
 export default function WebLingoPro() {
-  const [nomeAluno, setNomeAluno] = useState("");
-  const [appIniciado, setAppIniciado] = useState(false);
-  const [finalizado, setFinalizado] = useState(false);
+  // ── ESTADOS PERSISTENTES (AUTOSAVE) ─────────────────────────────────────────
+  const [nomeAluno, setNomeAluno] = useState(() => localStorage.getItem("wl_nome") || "");
+  const [appIniciado, setAppIniciado] = useState(() => localStorage.getItem("wl_iniciado") === "true");
+  const [finalizado, setFinalizado] = useState(() => localStorage.getItem("wl_finalizado") === "true");
   const [xp, setXp] = useState(() => Number(localStorage.getItem("wl_xp")) || 0);
   const [done, setDone] = useState(() => JSON.parse(localStorage.getItem("wl_done")) || {});
   const [unlockedMods, setUnlockedMods] = useState(() => JSON.parse(localStorage.getItem("wl_unlocked")) || [0]);
+  const [modIdx, setModIdx] = useState(() => Number(localStorage.getItem("wl_modIdx")) || 0);
+  const [lvlIdx, setLvlIdx] = useState(() => Number(localStorage.getItem("wl_lvlIdx")) || 0);
+  const [fase, setFase] = useState(() => localStorage.getItem("wl_fase") || "aula");
   
-  const [modIdx, setModIdx] = useState(0);
-  const [lvlIdx, setLvlIdx] = useState(0);
-  const [fase, setFase] = useState("aula");
-  const [userCode, setUserCode] = useState(MODULOS[0].niveis[0].desafio.starter);
+  // O código do usuário também é salvo em tempo real!
+  const [userCode, setUserCode] = useState(() => {
+    const savedCode = localStorage.getItem("wl_userCode");
+    return savedCode !== null ? savedCode : MODULOS[0].niveis[0].desafio.starter;
+  });
+
   const [feedback, setFeedback] = useState(null);
   const [showPassModal, setShowPassModal] = useState(null);
   const [passInput, setPassInput] = useState("");
@@ -153,11 +159,19 @@ export default function WebLingoPro() {
   const mod = MODULOS[modIdx];
   const lvl = mod.niveis[lvlIdx];
 
+  // Efeito que salva tudo no localStorage sempre que algo muda
   useEffect(() => {
+    localStorage.setItem("wl_nome", nomeAluno);
+    localStorage.setItem("wl_iniciado", appIniciado);
+    localStorage.setItem("wl_finalizado", finalizado);
     localStorage.setItem("wl_xp", xp);
     localStorage.setItem("wl_done", JSON.stringify(done));
     localStorage.setItem("wl_unlocked", JSON.stringify(unlockedMods));
-  }, [xp, done, unlockedMods]);
+    localStorage.setItem("wl_modIdx", modIdx);
+    localStorage.setItem("wl_lvlIdx", lvlIdx);
+    localStorage.setItem("wl_fase", fase);
+    localStorage.setItem("wl_userCode", userCode);
+  }, [nomeAluno, appIniciado, finalizado, xp, done, unlockedMods, modIdx, lvlIdx, fase, userCode]);
 
   const tentarDesbloquear = () => {
     if (passInput === SENHA_MESTRE) {
@@ -316,7 +330,17 @@ export default function WebLingoPro() {
           return (
             <button 
               key={idx}
-              onClick={() => isUnlocked ? setModIdx(idx) : setShowPassModal(idx)}
+              onClick={() => {
+                if(isUnlocked) {
+                  setModIdx(idx);
+                  setLvlIdx(0);
+                  setFase("aula");
+                  setUserCode(MODULOS[idx].niveis[0].desafio.starter);
+                  setFeedback(null);
+                } else {
+                  setShowPassModal(idx);
+                }
+              }}
               className={`flex-1 p-4 rounded-2xl border transition-all flex flex-col items-center gap-2 ${modIdx === idx ? 'bg-orange-600 border-orange-400 shadow-lg shadow-orange-900/20' : 'bg-slate-900 border-slate-800'}`}
             >
               <span className="text-2xl">{isUnlocked ? m.emoji : <Lock size={20} className="text-slate-600"/>}</span>
