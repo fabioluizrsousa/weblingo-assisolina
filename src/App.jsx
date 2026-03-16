@@ -9,136 +9,65 @@ const SENHA_MESTRE = "prof2026";
 const audioSuccess = new Audio("https://cdn.pixabay.com/audio/2022/03/24/audio_34979e2c67.mp3");
 const audioError = new Audio("https://cdn.pixabay.com/audio/2021/08/04/audio_0625624705.mp3");
 
-// ── BANCO DE DADOS PEDAGÓGICO ────────────────────────────────────────────────
+const playSuccess = () => audioSuccess.play().catch(() => console.log("Áudio bloqueado"));
+const playError = () => audioError.play().catch(() => console.log("Áudio bloqueado"));
+
+// ── BANCO DE DADOS PEDAGÓGICO (30 FASES) ─────────────────────────────────────
 const MODULOS = [
   {
     id: 0, sigla: "HTML", emoji: "🌐", titulo: "HTML — Estrutura",
     niveis: [
-      {
-        id:1, emoji:"🏗️", titulo:"Estrutura Básica", cat:"Fundamentos", xp:100,
-        aula:{ intro:"HTML define o esqueleto do site usando tags.", blocos:[{t:"cod",c:"<h1>Título</h1>"}] },
-        desafio:{ inst:"Adicione um `<h1>` com 'Minha Página' no `<body>`.", starter:"<body>\n  \n</body>", dica:"<h1>Minha Página</h1>" },
-        validacao: [{ regex: /<h1>Minha Página<\/h1>/i, erro: "Tag <h1> incorreta ou texto diferente de 'Minha Página'." }],
-        explicacao: "O <h1> é o título principal da página. Motores de busca como o Google usam essa tag para entender o assunto principal do seu site!"
-      },
-      {
-        id:2, emoji:"✍️", titulo:"Parágrafos", cat:"Texto", xp:100,
-        aula:{ intro:"Use <p> para blocos de texto.", blocos:[{t:"cod",c:"<p>Texto</p>"}] },
-        desafio:{ inst:"Crie um `<h1>` 'Sobre' e um `<p>` com seu nome.", starter:"<body>\n  \n</body>", dica:"<h1>Sobre</h1> <p>Seu nome</p>" },
-        validacao: [{ regex: /<h1>Sobre<\/h1>/i, erro: "Faltou o <h1>Sobre</h1>" }, { regex: /<p>.*?<\/p>/i, erro: "Faltou o parágrafo <p>" }],
-        explicacao: "Diferenciar títulos (h1) de parágrafos (p) cria uma hierarquia visual, facilitando a leitura para humanos e tecnologias assistivas."
-      },
-      {
-        id:3, emoji:"🔗", titulo:"Links e Mídia", cat:"Mídia", xp:150,
-        aula:{ intro:"Links usam a tag <a> com o atributo href.", blocos:[{t:"cod",c:'<a href="url">Texto</a>'}] },
-        desafio:{ inst:"Crie um link para `https://google.com` com o texto 'Google'.", starter:"<body>\n  \n</body>", dica:'<a href="https://google.com">Google</a>' },
-        validacao: [{ regex: /<a\s+href="https:\/\/google\.com">Google<\/a>/i, erro: "O link deve apontar para o Google com o texto correto." }],
-        explicacao: "Links são as 'pontes' da internet. O atributo 'href' (Hypertext Reference) indica o destino exato da navegação."
-      },
-      {
-        id:4, emoji:"📋", titulo:"Listas", cat:"Texto", xp:150,
-        aula:{ intro:"<ul> cria listas com marcadores e <li> define cada item.", blocos:[{t:"cod",c:"<ul><li>Item</li></ul>"}] },
-        desafio:{ inst:"Crie uma lista `<ul>` com dois itens `<li>`.", starter:"<body>\n  \n</body>", dica:"<ul> <li>A</li> <li>B</li> </ul>" },
-        validacao: [{ regex: /<ul>\s*(<li>.*?<\/li>\s*){2,}<\/ul>/is, erro: "Crie uma lista <ul> com pelo menos 2 itens <li>." }],
-        explicacao: "Listas são a base de quase todos os menus de navegação profissionais. Elas ajudam a organizar informações relacionadas."
-      },
-      {
-        id:5, emoji:"📦", titulo:"Divs e Classes", cat:"Estrutura", xp:200,
-        aula:{ intro:"<div> agrupa elementos e 'class' identifica-os para o CSS.", blocos:[{t:"cod",c:'<div class="caixa"></div>'}] },
-        desafio:{ inst:"Crie uma `<div class='perfil'>` com um `<h2>` dentro.", starter:"<body>\n  \n</body>", dica:'<div class="perfil"><h2>...</h2></div>' },
-        validacao: [{ regex: /class\s*=\s*["']perfil["'][\s\S]*?<h2/i, erro: "A div deve ter a classe 'perfil' e conter um <h2>." }],
-        explicacao: "A tag <div> é um container genérico. Ao usar classes, você cria 'ganchos' para o CSS estilizar blocos específicos."
-      }
+      { id:1, emoji:"🏗️", titulo:"Estrutura", cat:"Base", xp:100, aula:{ intro:"HTML define o esqueleto. O <h1> é o título.", blocos:[{t:"cod",c:"<h1>Título</h1>"}] }, desafio:{ inst:"Crie um `<h1>` com 'Minha Página'.", starter:"<body>\n  \n</body>", dica:"<h1>Minha Página</h1>" }, validacao: [{ regex: /<h1>Minha Página<\/h1>/i, erro: "Faltou o <h1>Minha Página</h1>" }], explicacao: "Tags dão significado ao texto." },
+      { id:2, emoji:"✍️", titulo:"Parágrafos", cat:"Texto", xp:100, aula:{ intro:"Use <p> para textos longos.", blocos:[{t:"cod",c:"<p>Texto</p>"}] }, desafio:{ inst:"Crie um `<p>` com a palavra 'Bem-vindo'.", starter:"<body>\n  \n</body>", dica:"<p>Bem-vindo</p>" }, validacao: [{ regex: /<p>Bem-vindo<\/p>/i, erro: "Faltou o <p>Bem-vindo</p>" }], explicacao: "Diferencia títulos de textos comuns." },
+      { id:3, emoji:"🔗", titulo:"Links", cat:"Navegação", xp:150, aula:{ intro:"O <a> cria links. O href diz para onde ir.", blocos:[{t:"cod",c:'<a href="url">Link</a>'}] }, desafio:{ inst:"Faça um link para 'https://google.com' com o texto 'Google'.", starter:"<body>\n  \n</body>", dica:'<a href="https://google.com">Google</a>' }, validacao: [{ regex: /<a\s+href=["']https:\/\/google\.com["']>Google<\/a>/i, erro: "Link incorreto." }], explicacao: "A base da internet: conectar páginas!" },
+      { id:4, emoji:"📋", titulo:"Listas", cat:"Texto", xp:150, aula:{ intro:"<ul> agrupa itens (<li>).", blocos:[{t:"cod",c:"<ul><li>A</li></ul>"}] }, desafio:{ inst:"Crie uma `<ul>` com dois itens `<li>` (A e B).", starter:"<body>\n  \n</body>", dica:"<ul> <li>A</li> <li>B</li> </ul>" }, validacao: [{ regex: /<ul>[\s\S]*?(<li>.*?<\/li>[\s\S]*?){2,}<\/ul>/i, erro: "Precisa de uma <ul> com 2 <li>." }], explicacao: "Ótimo para menus de navegação." },
+      { id:5, emoji:"📦", titulo:"Divs", cat:"Estrutura", xp:200, aula:{ intro:"<div> agrupa elementos em caixas.", blocos:[{t:"cod",c:'<div class="caixa"></div>'}] }, desafio:{ inst:"Crie uma `<div class='perfil'>` com um `<h2>` dentro.", starter:"<body>\n  \n</body>", dica:'<div class="perfil">\n  <h2>Nome</h2>\n</div>' }, validacao: [{ regex: /class\s*=\s*["']perfil["'][\s\S]*?<h2/i, erro: "Crie a div perfil contendo um h2." }], explicacao: "O bloco de montar mais usado na web." },
+      { id:6, emoji:"🖼️", titulo:"Imagens", cat:"Mídia", xp:200, aula:{ intro:"A tag <img> carrega fotos. Use 'src' para o link.", blocos:[{t:"cod",c:'<img src="foto.jpg">'}] }, desafio:{ inst:"Adicione uma `<img>` com src 'foto.png'.", starter:"<body>\n  \n</body>", dica:'<img src="foto.png">' }, validacao: [{ regex: /<img\s+src=["']foto\.png["']\s*\/?>/i, erro: "A tag img deve ter o src='foto.png'." }], explicacao: "Imagens não têm tag de fechamento!" },
+      { id:7, emoji:"🔘", titulo:"Botões", cat:"Interação", xp:200, aula:{ intro:"O <button> cria áreas clicáveis.", blocos:[{t:"cod",c:"<button>Ação</button>"}] }, desafio:{ inst:"Crie um `<button>` escrito 'Enviar'.", starter:"<body>\n  \n</body>", dica:"<button>Enviar</button>" }, validacao: [{ regex: /<button.*?>Enviar<\/button>/i, erro: "O botão deve ter o texto Enviar." }], explicacao: "Botões iniciam ações do usuário." },
+      { id:8, emoji:"⌨️", titulo:"Inputs", cat:"Formulários", xp:250, aula:{ intro:"O <input> cria campos de texto.", blocos:[{t:"cod",c:'<input type="text">'}] }, desafio:{ inst:"Crie um `<input type='password'>`.", starter:"<body>\n  \n</body>", dica:'<input type="password">' }, validacao: [{ regex: /<input\s+type=["']password["']\s*\/?>/i, erro: "Faltou o input type='password'." }], explicacao: "Campos de senha escondem o texto digitado." },
+      { id:9, emoji:"📝", titulo:"Forms", cat:"Formulários", xp:300, aula:{ intro:"O <form> envia dados de inputs.", blocos:[{t:"cod",c:"<form><input></form>"}] }, desafio:{ inst:"Crie um `<form>` contendo um `<input>` e um `<button>`.", starter:"<body>\n  \n</body>", dica:"<form>\n  <input type='text'>\n  <button>Ir</button>\n</form>" }, validacao: [{ regex: /<form>[\s\S]*?<input[\s\S]*?<button[\s\S]*?<\/form>/i, erro: "O form precisa conter input e button." }], explicacao: "A base dos sistemas de login." },
+      { id:10, emoji:"👑", titulo:"Semântica", cat:"Boss 🔥", xp:400, aula:{ intro:"Tags como <header> e <footer> organizam o site para o Google.", blocos:[{t:"cod",c:"<header></header>"}] }, desafio:{ inst:"Crie um `<header>` com um `<h1>` e um `<footer>` com um `<p>`.", starter:"<body>\n  \n</body>", dica:"<header><h1>Topo</h1></header>\n<footer><p>Fim</p></footer>" }, validacao: [{ regex: /<header>[\s\S]*?<h1[\s\S]*?<\/header>[\s\S]*?<footer>[\s\S]*?<p[\s\S]*?<\/footer>/i, erro: "Crie o header com h1 e o footer com p." }], explicacao: "HTML semântico deixa a web mais acessível!" }
     ]
   },
   {
-    id: 1, sigla: "CSS", emoji: "🎨", titulo: "CSS — O Estilo da Web",
+    id: 1, sigla: "CSS", emoji: "🎨", titulo: "CSS — O Estilo",
     niveis: [
-      {
-        id: 1, emoji: "🖌️", titulo: "Cores e Seletores", cat: "Visual", xp: 100,
-        aula: { intro: "O CSS controla o visual. 'color' muda o texto e 'background-color' o fundo.", blocos: [{ t: "cod", c: "h1 { color: blue; }" }] },
-        desafio: { inst: "Mude a cor do `h1` para `navy` e o fundo do `body` para `aliceblue`.", starter: "<style>\n  /* Estilize aqui */\n</style>\n<body>\n  <h1>Olá Mundo</h1>\n</body>", dica: "h1 { color: navy; } body { background-color: aliceblue; }" },
-        validacao: [{ regex: /h1\s*{[^}]*color:\s*navy/i, erro: "O h1 precisa ter a cor 'navy'." }, { regex: /body\s*{[^}]*background-color:\s*aliceblue/i, erro: "O body precisa do fundo 'aliceblue'." }],
-        explicacao: "Seletores dizem ao navegador EXATAMENTE qual elemento você quer pintar. O 'body' representa a página inteira!"
-      },
-      {
-        id: 2, emoji: "✍️", titulo: "Tipografia", cat: "Texto", xp: 100,
-        aula: { intro: "Controle o texto com 'font-family' (fonte) e 'font-size' (tamanho).", blocos: [{ t: "cod", c: "p { font-size: 20px; }" }] },
-        desafio: { inst: "Deixe o `h1` com tamanho `48px` e a fonte do `body` como `Arial`.", starter: "<style>\n\n</style>\n<body>\n  <h1>Título Grande</h1>\n</body>", dica: "h1 { font-size: 48px; } body { font-family: Arial; }" },
-        validacao: [{ regex: /font-size:\s*48px/i, erro: "O h1 deve ter 48px." }, { regex: /font-family:\s*Arial/i, erro: "A fonte deve ser Arial." }],
-        explicacao: "A tipografia é 90% do design web. Uma fonte bem escolhida garante que o usuário não canse a vista ao navegar."
-      },
-      {
-        id: 3, emoji: "📦", titulo: "Box Model", cat: "Layout", xp: 150,
-        aula: { intro: "Padding é o espaço interno. Border é a borda da caixa.", blocos: [{ t: "cod", c: "div { padding: 20px; }" }] },
-        desafio: { inst: "Crie uma borda de `5px solid orange` e um padding de `30px` na classe `.caixa`.", starter: "<style>\n  .caixa { }\n</style>\n<div class='caixa'>Oi</div>", dica: ".caixa { border: 5px solid orange; padding: 30px; }" },
-        validacao: [{ regex: /border:\s*5px\s+solid\s+orange/i, erro: "A borda deve ser 5px solid orange." }, { regex: /padding:\s*30px/i, erro: "O padding deve ser 30px." }],
-        explicacao: "Tudo na web é uma caixa. O preenchimento (padding) cria o 'respiro' interno, essencial para um visual limpo."
-      },
-      {
-        id: 4, emoji: "🔲", titulo: "Flexbox Básico", cat: "Layout", xp: 200,
-        aula: { intro: "Flexbox organiza elementos. 'display: flex' ativa o modo e 'justify-content' alinha horizontalmente.", blocos: [{ t: "cod", c: "div { display: flex; justify-content: center; }" }] },
-        desafio: { inst: "Alinhe os itens do `.container` no centro usando Flexbox.", starter: "<style>\n  .container { display: block; }\n</style>\n<div class='container'>\n  <div>A</div><div>B</div>\n</div>", dica: "display: flex; justify-content: center;" },
-        validacao: [{ regex: /display:\s*flex/i, erro: "Ative o display: flex." }, { regex: /justify-content:\s*center/i, erro: "Use justify-content: center." }],
-        explicacao: "O Flexbox acabou com os layouts quebrados. Ele permite organizar elementos em linha ou coluna de forma automática."
-      },
-      {
-        id: 5, emoji: "🎯", titulo: "Centralização Total", cat: "Boss 🔥", xp: 250,
-        aula: { intro: "Para centralizar verticalmente, use 'align-items: center' no container com altura.", blocos: [{ t: "cod", c: "align-items: center;" }] },
-        desafio: { inst: "Centralize a `.caixa` perfeitamente no meio da tela (horizontal e vertical).", starter: "<style>\n  body {\n    height: 100vh;\n    margin: 0;\n  }\n</style>\n<div class='caixa'>ALVO</div>", dica: "display: flex; justify-content: center; align-items: center;" },
-        validacao: [{ regex: /justify-content:\s*center/i, erro: "Faltou a horizontal." }, { regex: /align-items:\s*center/i, erro: "Faltou a vertical." }],
-        explicacao: "Parabéns! Você resolveu o maior 'meme' da programação: centralizar uma div. Agora seu conteúdo brilha no centro da tela!"
-      }
+      { id: 1, emoji: "🖌️", titulo: "Cores", cat: "Visual", xp: 100, aula: { intro: "'color' muda texto, 'background' o fundo.", blocos: [{ t: "cod", c: "h1 { color: red; }" }] }, desafio: { inst: "Mude o fundo do `body` para `black` e a cor do `h1` para `white`.", starter: "<style>\n\n</style>\n<body>\n  <h1>Oi</h1>\n</body>", dica: "body { background: black; } h1 { color: white; }" }, validacao: [{ regex: /body\s*{[^}]*background(-color)?:\s*black/i, erro: "Fundo black no body." }, { regex: /h1\s*{[^}]*color:\s*white/i, erro: "Texto white no h1." }], explicacao: "As cores dão vida ao site." },
+      { id: 2, emoji: "✍️", titulo: "Fontes", cat: "Texto", xp: 100, aula: { intro: "Controle tamanho com 'font-size'.", blocos: [{ t: "cod", c: "p { font-size: 20px; }" }] }, desafio: { inst: "Deixe o `h1` com tamanho `48px`.", starter: "<style>\n  h1 { }\n</style>\n<h1>Título</h1>", dica: "h1 { font-size: 48px; }" }, validacao: [{ regex: /font-size:\s*48px/i, erro: "O h1 deve ter 48px." }], explicacao: "Tamanhos guiam os olhos do usuário." },
+      { id: 3, emoji: "📦", titulo: "Box Model", cat: "Layout", xp: 150, aula: { intro: "Padding é o respiro interno da caixa.", blocos: [{ t: "cod", c: "div { padding: 20px; }" }] }, desafio: { inst: "Crie um padding de `30px` na `.caixa`.", starter: "<style>\n  .caixa { border: 1px solid red; }\n</style>\n<div class='caixa'>Oi</div>", dica: ".caixa { padding: 30px; }" }, validacao: [{ regex: /padding:\s*30px/i, erro: "Adicione padding: 30px;" }], explicacao: "O espaço vazio é essencial no design." },
+      { id: 4, emoji: "🔲", titulo: "Flexbox", cat: "Layout", xp: 200, aula: { intro: "Flexbox alinha itens facilmente.", blocos: [{ t: "cod", c: "display: flex;" }] }, desafio: { inst: "Use `display: flex;` e `justify-content: space-between;` no menu.", starter: "<style>\n  .menu { }\n</style>\n<div class='menu'>\n  <b>Logo</b> <b>Sair</b>\n</div>", dica: "display: flex; justify-content: space-between;" }, validacao: [{ regex: /display:\s*flex/i, erro: "Use display flex." }, { regex: /justify-content:\s*space-between/i, erro: "Use justify-content: space-between;" }], explicacao: "A base dos menus modernos." },
+      { id: 5, emoji: "🎯", titulo: "Centralizar", cat: "Layout", xp: 200, aula: { intro: "Alinhe no centro com 'center'.", blocos: [{ t: "cod", c: "align-items: center;" }] }, desafio: { inst: "Centralize verticalmente com `align-items: center`.", starter: "<style>\n  .tela { display: flex; height: 100vh; }\n</style>\n<div class='tela'>\n  <button>Botão</button>\n</div>", dica: "align-items: center; justify-content: center;" }, validacao: [{ regex: /align-items:\s*center/i, erro: "Faltou a vertical." }], explicacao: "Você dominou o centro da tela." },
+      { id: 6, emoji: "🟢", titulo: "Bordas", cat: "Design", xp: 200, aula: { intro: "'border-radius' arredonda as pontas.", blocos: [{ t: "cod", c: "border-radius: 10px;" }] }, desafio: { inst: "Arredonde a `.caixa` com `border-radius: 50%`.", starter: "<style>\n  .caixa { width: 50px; height: 50px; background: red; }\n</style>\n<div class='caixa'></div>", dica: "border-radius: 50%;" }, validacao: [{ regex: /border-radius:\s*50%/i, erro: "Use border-radius: 50% para criar um círculo." }], explicacao: "50% transforma um quadrado em um círculo perfeito!" },
+      { id: 7, emoji: "🖱️", titulo: "Hover", cat: "Efeitos", xp: 250, aula: { intro: "O `:hover` muda o estilo ao passar o mouse.", blocos: [{ t: "cod", c: "button:hover { background: blue; }" }] }, desafio: { inst: "Faça o `a:hover` ficar com `color: red`.", starter: "<style>\n  a { color: blue; }\n</style>\n<a>Link</a>", dica: "a:hover { color: red; }" }, validacao: [{ regex: /a:hover\s*{[^}]*color:\s*red/i, erro: "Crie a regra a:hover { color: red; }" }], explicacao: "Feedback visual é vital para a experiência do usuário." },
+      { id: 8, emoji: "👻", titulo: "Sombras", cat: "Design", xp: 250, aula: { intro: "Sombras dão profundidade (X Y Blur Cor).", blocos: [{ t: "cod", c: "box-shadow: 2px 2px 5px black;" }] }, desafio: { inst: "Adicione `box-shadow: 5px 5px 10px gray;` no `.card`.", starter: "<style>\n  .card { width: 100px; height: 100px; border: 1px solid black; }\n</style>\n<div class='card'></div>", dica: "box-shadow: 5px 5px 10px gray;" }, validacao: [{ regex: /box-shadow:\s*5px\s+5px\s+10px\s+gray/i, erro: "Sombra incorreta." }], explicacao: "Elementos ganham aspecto 3D." },
+      { id: 9, emoji: "⏱️", titulo: "Transição", cat: "Efeitos", xp: 300, aula: { intro: "Transições suavizam as mudanças.", blocos: [{ t: "cod", c: "transition: 0.3s;" }] }, desafio: { inst: "Adicione `transition: 0.5s;` no `button`.", starter: "<style>\n  button { background: gray; }\n  button:hover { background: black; }\n</style>\n<button>Suave</button>", dica: "button { transition: 0.5s; }" }, validacao: [{ regex: /button\s*{[^}]*transition:\s*0\.5s/i, erro: "Coloque a transition no bloco do botão principal." }], explicacao: "A web fica elegante com animações suaves." },
+      { id: 10, emoji: "🍱", titulo: "Grid Básico", cat: "Boss 🔥", xp: 400, aula: { intro: "CSS Grid divide o layout em colunas.", blocos: [{ t: "cod", c: "display: grid; grid-template-columns: 1fr 1fr;" }] }, desafio: { inst: "Crie um grid no `.mural` com `grid-template-columns: 1fr 1fr;`.", starter: "<style>\n  .mural { display: grid; }\n</style>\n<div class='mural'>\n  <p>1</p><p>2</p>\n</div>", dica: "grid-template-columns: 1fr 1fr;" }, validacao: [{ regex: /grid-template-columns:\s*1fr\s+1fr/i, erro: "Faltou definir as colunas com 1fr 1fr." }], explicacao: "Você acaba de construir a fundação de sites como Pinterest e Instagram!" }
     ]
   },
   {
-    id: 2, sigla: "JS", emoji: "⚡", titulo: "JS — Lógica e Magia",
+    id: 2, sigla: "JS", emoji: "⚡", titulo: "JS — Lógica",
     niveis: [
-      {
-        id: 1, emoji: "📝", titulo: "Variáveis", cat: "Lógica", xp: 100,
-        aula: { intro: "JS dá vida ao site. 'let' cria variáveis e 'alert' mostra uma mensagem.", blocos: [{ t: "cod", c: "let x = 10; alert(x);" }] },
-        desafio: { inst: "Crie `let curso = 'WebLingo'` e mostre-a em um `alert(curso)`.", starter: "<script>\n  // Sua lógica\n</script>", dica: "let curso = 'WebLingo'; alert(curso);" },
-        validacao: [{ regex: /let\s+curso\s*=\s*["']WebLingo["']/i, erro: "Variável 'curso' incorreta." }, { regex: /alert\(\s*curso\s*\)/i, erro: "Chame o alert(curso)." }],
-        explicacao: "Variáveis são como gavetas na memória. Guardar dados em variáveis permite que você use a mesma informação em vários lugares."
-      },
-      {
-        id: 2, emoji: "⚙️", titulo: "Funções", cat: "Lógica", xp: 150,
-        aula: { intro: "Funções são blocos de código que você pode 'chamar' para executar tarefas.", blocos: [{ t: "cod", c: "function acao() { ... }" }] },
-        desafio: { inst: "Crie uma função `avisar` que dispara um `alert('Oi')`.", starter: "<script>\n  function avisar() {\n  }\n</script>", dica: "function avisar() { alert('Oi'); }" },
-        validacao: [{ regex: /function\s+avisar\s*\(\)/i, erro: "Função 'avisar' não encontrada." }, { regex: /alert\(["']Oi["']\)/i, erro: "Use alert('Oi') na função." }],
-        explicacao: "Funções evitam a repetição de código. Você escreve a lógica uma vez e a executa sempre que precisar."
-      },
-      {
-        id: 3, emoji: "🎯", titulo: "DOM", cat: "DOM", xp: 150,
-        aula: { intro: "O JS pode mudar o HTML usando 'document.getElementById'.", blocos: [{ t: "cod", c: "document.getElementById('id').innerHTML = '...';" }] },
-        desafio: { inst: "Mude o texto do `h1` (id='titulo') para 'DOM Dominado!'.", starter: "<h1 id='titulo'>Texto Antigo</h1>\n<script>\n</script>", dica: "document.getElementById('titulo').innerHTML = 'DOM Dominado!';" },
-        validacao: [{ regex: /getElementById\(["']titulo["']\)/i, erro: "Use o ID 'titulo'." }, { regex: /\.innerHTML\s*=\s*["']DOM Dominado!["']/i, erro: "Texto errado." }],
-        explicacao: "O DOM é a árvore que representa seu site. Alterar o 'innerHTML' permite mudar o conteúdo sem recarregar a página."
-      },
-      {
-        id: 4, emoji: "🖱️", titulo: "Eventos", cat: "Eventos", xp: 200,
-        aula: { intro: "O atributo 'onclick' executa código quando o usuário clica em algo.", blocos: [{ t: "cod", c: "<button onclick='...'>" }] },
-        desafio: { inst: "Faça o botão chamar a função `mudarCor` ao ser clicado.", starter: "<button onclick=''>Clique</button>\n<script>\n  function mudarCor() {\n    document.body.style.background = 'yellow';\n  }\n</script>", dica: "Adicione onclick='mudarCor()' no botão." },
-        validacao: [{ regex: /onclick=["']mudarCor\(\)["']/i, erro: "Faltou o onclick='mudarCor()'." }],
-        explicacao: "Eventos são o que tornam a web interativa. O 'onclick' é o ouvido do seu site, esperando por um comando do usuário."
-      },
-      {
-        id: 5, emoji: "🏆", titulo: "O Contador", cat: "Boss 🔥", xp: 300,
-        aula: { intro: "Vamos criar um contador. n = n + 1 aumenta o valor atual.", blocos: [{ t: "cod", c: "n++;" }] },
-        desafio: { inst: "Complete a função `somar` para aumentar 'n' e atualizar o span.", starter: "<h3><span id='v'>0</span></h3>\n<button onclick='somar()'>+1</button>\n<script>\n let n=0; function somar() { }\n</script>", dica: "n++; document.getElementById('v').innerHTML = n;" },
-        validacao: [{ regex: /n\s*(\+=\s*1|\+\+|= n\s*\+\s*1)/i, erro: "Aumente o n." }, { regex: /innerHTML\s*=\s*n/i, erro: "Atualize o span." }],
-        explicacao: "Sensacional! Você criou um estado dinâmico. Esse é o princípio básico de apps modernos como Instagram e WhatsApp!"
-      }
+      { id: 1, emoji: "📝", titulo: "Variáveis", cat: "Lógica", xp: 100, aula: { intro: "'let' guarda dados.", blocos: [{ t: "cod", c: "let x = 10;" }] }, desafio: { inst: "Crie `let nome = 'WebLingo'` e dê um `alert(nome)`.", starter: "<script>\n</script>", dica: "let nome = 'WebLingo'; alert(nome);" }, validacao: [{ regex: /let\s+nome\s*=\s*["']WebLingo["']/i, erro: "Variável 'nome' errada." }, { regex: /alert\(\s*nome\s*\)/i, erro: "Chame alert(nome)." }], explicacao: "Memória básica da programação." },
+      { id: 2, emoji: "⚙️", titulo: "Funções", cat: "Lógica", xp: 150, aula: { intro: "Funções agrupam códigos.", blocos: [{ t: "cod", c: "function oi() { }" }] }, desafio: { inst: "Crie `function avisar() { alert('Oi'); }`.", starter: "<script>\n</script>", dica: "function avisar() { alert('Oi'); }" }, validacao: [{ regex: /function\s+avisar\s*\(\)/i, erro: "Faltou a função avisar()." }, { regex: /alert\(["']Oi["']\)/i, erro: "O alert('Oi') deve estar dentro." }], explicacao: "Blocos reutilizáveis de código." },
+      { id: 3, emoji: "🎯", titulo: "DOM", cat: "Navegador", xp: 150, aula: { intro: "O JS modifica o HTML.", blocos: [{ t: "cod", c: "document.getElementById('id').innerHTML = 'X';" }] }, desafio: { inst: "Mude o texto do `h1` (id='titulo') para 'DOM'.", starter: "<h1 id='titulo'>X</h1>\n<script>\n</script>", dica: "document.getElementById('titulo').innerHTML = 'DOM';" }, validacao: [{ regex: /getElementById\(["']titulo["']\)/i, erro: "Use getElementById no 'titulo'." }, { regex: /\.innerHTML\s*=\s*["']DOM["']/i, erro: "Texto deve ser 'DOM'." }], explicacao: "Interação dinâmica." },
+      { id: 4, emoji: "🖱️", titulo: "Eventos", cat: "Interação", xp: 200, aula: { intro: "O usuário aciona o código.", blocos: [{ t: "cod", c: "<button onclick='...'>" }] }, desafio: { inst: "Adicione `onclick='mudar()'` no botão.", starter: "<button>Clique</button>\n<script>\n  function mudar() {}\n</script>", dica: "Adicione onclick no botão." }, validacao: [{ regex: /<button[\s\S]*?onclick=["']mudar\(\)["']/i, erro: "Faltou o onclick='mudar()'." }], explicacao: "O site reage a cliques." },
+      { id: 5, emoji: "➕", titulo: "Contador", cat: "Estado", xp: 250, aula: { intro: "Variáveis mudam com o tempo.", blocos: [{ t: "cod", c: "n++;" }] }, desafio: { inst: "Na função, some 1 a `n` e atualize o `innerHTML`.", starter: "<span id='v'>0</span>\n<button onclick='s()'>+1</button>\n<script>\n let n=0; function s() { \n }\n</script>", dica: "n++; document.getElementById('v').innerHTML = n;" }, validacao: [{ regex: /n\s*(\+=\s*1|\+\+|= n\s*\+\s*1)/i, erro: "Aumente o n." }, { regex: /innerHTML\s*=\s*n/i, erro: "Atualize a tela com n." }], explicacao: "Lógica de Likes e Carrinhos de Compra." },
+      { id: 6, emoji: "📚", titulo: "Arrays", cat: "Lógica", xp: 250, aula: { intro: "Arrays guardam listas de coisas.", blocos: [{ t: "cod", c: "let carros = ['Fusca', 'Gol'];" }] }, desafio: { inst: "Crie `let alunos = ['Ana', 'Bruno']`.", starter: "<script>\n  \n</script>", dica: "let alunos = ['Ana', 'Bruno'];" }, validacao: [{ regex: /let\s+alunos\s*=\s*\[["']Ana["']\s*,\s*["']Bruno["']\]/i, erro: "A lista deve conter 'Ana' e 'Bruno'." }], explicacao: "Bancos de dados inteiros cabem em listas." },
+      { id: 7, emoji: "🔀", titulo: "Condicionais", cat: "Lógica", xp: 300, aula: { intro: "If/Else fazem o código tomar decisões.", blocos: [{ t: "cod", c: "if (n > 5) { }" }] }, desafio: { inst: "Se `nota` for maior que 5, dê um `alert('Passou')`.", starter: "<script>\n  let nota = 8;\n  if (  ) {\n    \n  }\n</script>", dica: "if (nota > 5) { alert('Passou'); }" }, validacao: [{ regex: /if\s*\(\s*nota\s*>\s*5\s*\)/i, erro: "A condição deve ser nota > 5." }, { regex: /alert\(["']Passou["']\)/i, erro: "Deve dar alert('Passou')." }], explicacao: "A inteligência dos sistemas." },
+      { id: 8, emoji: "🔁", titulo: "Loops", cat: "Lógica", xp: 300, aula: { intro: "O laço `for` repete ações.", blocos: [{ t: "cod", c: "for(let i=0; i<3; i++) { }" }] }, desafio: { inst: "Crie um `for` repetindo 3 vezes (`i<3`) e rodando `n++`.", starter: "<script>\n  let n = 0;\n  for(let i=0; ; ) {\n    \n  }\n</script>", dica: "for(let i=0; i<3; i++) { n++; }" }, validacao: [{ regex: /for\s*\(\s*let\s+i\s*=\s*0\s*;\s*i\s*<\s*3\s*;\s*i\+\+\s*\)/i, erro: "A estrutura do for deve ser let i=0; i<3; i++" }, { regex: /n\+\+/i, erro: "Rode n++ dentro do loop." }], explicacao: "Máquinas não cansam de repetir tarefas." },
+      { id: 9, emoji: "📝", titulo: "Estilos via JS", cat: "DOM", xp: 350, aula: { intro: "O JS pode mudar o CSS (style).", blocos: [{ t: "cod", c: "el.style.color = 'red';" }] }, desafio: { inst: "Mude a `style.color` do id 'texto' para `red`.", starter: "<p id='texto'>Alerta!</p>\n<script>\n  // Seu código\n</script>", dica: "document.getElementById('texto').style.color = 'red';" }, validacao: [{ regex: /\.style\.color\s*=\s*["']red["']/i, erro: "Aplique a cor vermelha via style.color" }], explicacao: "Interfaces dinâmicas usam muito isso." },
+      { id: 10, emoji: "🌙", titulo: "Dark Mode", cat: "Boss 🔥", xp: 500, aula: { intro: "ClassList adiciona/remove classes do CSS.", blocos: [{ t: "cod", c: "document.body.classList.toggle('dark');" }] }, desafio: { inst: "Ao clicar, acione `document.body.classList.toggle('darkMode')`.", starter: "<style>\n .darkMode { background: black; color: white; }\n</style>\n<button onclick=''>Tema</button>\n<script>\n function tema() {\n \n }\n</script>", dica: "Adicione onclick='tema()' e classList.toggle('darkMode')" }, validacao: [{ regex: /classList\.toggle\(["']darkMode["']\)/i, erro: "Use o toggle com a classe darkMode." }, { regex: /onclick=["']tema\(\)["']/i, erro: "Vincule o botão à função tema()." }], explicacao: "Você acaba de programar o botão de Tema Escuro mais usado no mundo!" }
     ]
   }
 ];
 
 // ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
 export default function WebLingoPro() {
-  // ── ESTADOS PERSISTENTES (AUTOSAVE) ─────────────────────────────────────────
   const [nomeAluno, setNomeAluno] = useState(() => localStorage.getItem("wl_nome") || "");
   const [appIniciado, setAppIniciado] = useState(() => localStorage.getItem("wl_iniciado") === "true");
   const [finalizado, setFinalizado] = useState(() => localStorage.getItem("wl_finalizado") === "true");
+  const [showModuleComplete, setShowModuleComplete] = useState(false); // NOVO ESTADO!
+  
   const [xp, setXp] = useState(() => Number(localStorage.getItem("wl_xp")) || 0);
   const [done, setDone] = useState(() => JSON.parse(localStorage.getItem("wl_done")) || {});
   const [unlockedMods, setUnlockedMods] = useState(() => JSON.parse(localStorage.getItem("wl_unlocked")) || [0]);
@@ -146,7 +75,6 @@ export default function WebLingoPro() {
   const [lvlIdx, setLvlIdx] = useState(() => Number(localStorage.getItem("wl_lvlIdx")) || 0);
   const [fase, setFase] = useState(() => localStorage.getItem("wl_fase") || "aula");
   
-  // O código do usuário também é salvo em tempo real!
   const [userCode, setUserCode] = useState(() => {
     const savedCode = localStorage.getItem("wl_userCode");
     return savedCode !== null ? savedCode : MODULOS[0].niveis[0].desafio.starter;
@@ -159,7 +87,6 @@ export default function WebLingoPro() {
   const mod = MODULOS[modIdx];
   const lvl = mod.niveis[lvlIdx];
 
-  // Efeito que salva tudo no localStorage sempre que algo muda
   useEffect(() => {
     localStorage.setItem("wl_nome", nomeAluno);
     localStorage.setItem("wl_iniciado", appIniciado);
@@ -181,9 +108,9 @@ export default function WebLingoPro() {
       setUserCode(MODULOS[showPassModal].niveis[0].desafio.starter);
       setShowPassModal(null);
       setPassInput("");
-      audioSuccess.play().catch(() => console.log("Sem áudio"));
+      playSuccess();
     } else {
-      audioError.play().catch(() => console.log("Sem áudio"));
+      playError();
       alert("Senha incorreta!");
     }
   };
@@ -192,7 +119,7 @@ export default function WebLingoPro() {
     for (const regra of lvl.validacao) {
       if (!regra.regex.test(userCode)) {
         setFeedback({ tipo: "err", msg: regra.erro, emoji: "❌" });
-        audioError.play().catch(() => console.log("Sem áudio"));
+        playError();
         return;
       }
     }
@@ -201,30 +128,29 @@ export default function WebLingoPro() {
       setDone(prev => ({ ...prev, [key]: true }));
       setXp(prev => prev + lvl.xp);
     }
-    aaudioSuccess.play().catch(() => console.log("Sem áudio"));
+    playSuccess();
     setFeedback({ tipo: "ok", msg: "Mandou bem!", emoji: "🎉" });
   };
 
   const proximaFase = () => {
-    if (modIdx === 2 && lvlIdx === 4) {
+    // 1. Se for a FASE 10 do JAVASCRIPT -> FIM DE JOGO (Certificado)
+    if (modIdx === 2 && lvlIdx === mod.niveis.length - 1) {
       setFinalizado(true);
       return;
     }
     
-    if (lvlIdx < mod.niveis.length - 1) {
-      const next = lvlIdx + 1;
-      setLvlIdx(next);
-      setUserCode(mod.niveis[next].desafio.starter);
-      setFase("aula");
-      setFeedback(null);
-    } else if (modIdx < 2 && unlockedMods.includes(modIdx + 1)) {
-      const nextMod = modIdx + 1;
-      setModIdx(nextMod);
-      setLvlIdx(0);
-      setUserCode(MODULOS[nextMod].niveis[0].desafio.starter);
-      setFase("aula");
-      setFeedback(null);
+    // 2. Se for a ÚLTIMA fase do módulo (HTML ou CSS) -> Janela de Parabéns e Senha
+    if (lvlIdx === mod.niveis.length - 1) {
+      setShowModuleComplete(true);
+      return;
     }
+
+    // 3. Fase normal (Apenas avança para a próxima)
+    const next = lvlIdx + 1;
+    setLvlIdx(next);
+    setUserCode(mod.niveis[next].desafio.starter);
+    setFase("aula");
+    setFeedback(null);
   };
 
   // 1. TELA DE INÍCIO
@@ -266,7 +192,7 @@ export default function WebLingoPro() {
           <p className="text-xl mb-2 text-slate-500">Certificamos que</p>
           <h2 className="text-4xl font-black mb-8 underline decoration-orange-500 underline-offset-8">{nomeAluno}</h2>
           <p className="max-w-md mx-auto leading-relaxed text-slate-600 mb-8 font-medium">
-            Concluiu com êxito os desafios de programação na <strong>CEEFMTI ASSISOLINA ASSIS ANDRADE</strong>, 
+            Concluiu com êxito todos os 30 desafios de programação na <strong>CEEFMTI ASSISOLINA ASSIS ANDRADE</strong>, 
             dominando as bases de HTML, CSS e JavaScript.
           </p>
           <div className="flex justify-between items-end mt-16 border-t pt-8 border-slate-100">
@@ -289,15 +215,38 @@ export default function WebLingoPro() {
 
   // 3. INTERFACE DO APP
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4 font-sans">
+    <div className="min-h-screen bg-slate-950 text-white p-4 font-sans relative">
       
+      {/* MODAL DE FIM DE MÓDULO (NOVO) */}
+      {showModuleComplete && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[200] p-4 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-700 p-8 rounded-3xl w-full max-w-sm text-center shadow-[0_0_50px_rgba(234,88,12,0.3)] animate-in zoom-in-95">
+            <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-6 drop-shadow-lg" />
+            <h2 className="text-3xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Módulo Vencido!</h2>
+            <p className="text-slate-300 text-base mb-8 leading-relaxed">
+              Incrível, {nomeAluno}! Você destruiu nos 10 desafios de <strong className="text-white">{MODULOS[modIdx].titulo}</strong>.<br/><br/>
+              A etapa de {MODULOS[modIdx + 1]?.sigla || "Conclusão"} está trancada. <br/><span className="italic text-orange-400">Levante a mão e peça ao Professor Fábio Luiz para liberar a sua senha!</span>
+            </p>
+            <button 
+              onClick={() => {
+                setShowModuleComplete(false);
+                setFeedback(null); // Limpa o feedback para não ficar na tela
+              }} 
+              className="w-full py-4 bg-orange-600 hover:bg-orange-500 rounded-xl font-black transition-all active:scale-95"
+            >
+              CÓPIADO, PROFESSOR! 🚀
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* MODAL DE SENHA */}
       {showPassModal !== null && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
           <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl w-full max-w-sm text-center shadow-2xl">
             <LockKeyhole className="w-12 h-12 text-orange-500 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">Módulo Trancado</h2>
-            <p className="text-slate-400 text-sm mb-4 italic">Aguarde a instrução do Professor Fabio Luiz para liberar.</p>
+            <p className="text-slate-400 text-sm mb-4 italic">Aguarde a instrução do Professor Fábio Luiz para liberar.</p>
             <input 
               type="password" placeholder="Senha de acesso..." 
               className="w-full bg-slate-800 border border-slate-600 p-3 rounded-xl mb-4 text-center focus:border-orange-500 outline-none"
@@ -352,10 +301,10 @@ export default function WebLingoPro() {
 
       {/* CONTEÚDO PRINCIPAL */}
       <main className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20">
-        <section className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-fit shadow-xl">
+        <section className="bg-slate-900 border border-slate-800 rounded-3xl p-6 h-fit shadow-xl relative z-10">
           <div className="flex justify-between items-start mb-6">
             <h2 className="text-2xl font-black">{lvl.titulo}</h2>
-            <div className="text-xs bg-slate-800 px-3 py-1 rounded-full text-slate-400 font-mono">Fase {lvlIdx + 1}/5</div>
+            <div className="text-xs bg-slate-800 px-3 py-1 rounded-full text-slate-400 font-mono">Fase {lvlIdx + 1}/10</div>
           </div>
 
           <div className="flex gap-2 mb-6">
@@ -395,7 +344,7 @@ export default function WebLingoPro() {
           )}
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-4 relative z-0">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
             <div className="bg-slate-800 px-4 py-3 flex justify-between items-center">
               <span className="text-xs font-mono text-slate-500 tracking-widest uppercase">Editor Code</span>
@@ -415,13 +364,13 @@ export default function WebLingoPro() {
         </section>
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur-md p-4 no-print border-t border-slate-900">
+      <footer className="fixed bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur-md p-4 no-print border-t border-slate-900 z-50">
         <div className="max-w-5xl mx-auto flex items-center gap-4">
           <Award size={20} className="text-orange-500"/>
           <div className="flex-1 h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
-            <div className="h-full bg-orange-600 transition-all duration-1000" style={{width: `${(Object.keys(done).length / 15) * 100}%`}}/>
+            <div className="h-full bg-orange-600 transition-all duration-1000" style={{width: `${(Object.keys(done).length / 30) * 100}%`}}/>
           </div>
-          <span className="text-xs font-black text-slate-500">{Object.keys(done).length}/15</span>
+          <span className="text-xs font-black text-slate-500">{Object.keys(done).length}/30</span>
         </div>
       </footer>
 
