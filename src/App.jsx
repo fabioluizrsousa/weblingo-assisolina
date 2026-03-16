@@ -181,9 +181,9 @@ export default function WebLingoPro() {
       setUserCode(MODULOS[showPassModal].niveis[0].desafio.starter);
       setShowPassModal(null);
       setPassInput("");
-      audioSuccess.play();
+      audioSuccess.play().catch(() => console.log("Sem áudio"));
     } else {
-      audioError.play();
+      audioError.play().catch(() => console.log("Sem áudio"));
       alert("Senha incorreta!");
     }
   };
@@ -192,7 +192,7 @@ export default function WebLingoPro() {
     for (const regra of lvl.validacao) {
       if (!regra.regex.test(userCode)) {
         setFeedback({ tipo: "err", msg: regra.erro, emoji: "❌" });
-        audioError.play();
+        audioError.play().catch(() => console.log("Sem áudio"));
         return;
       }
     }
@@ -201,7 +201,7 @@ export default function WebLingoPro() {
       setDone(prev => ({ ...prev, [key]: true }));
       setXp(prev => prev + lvl.xp);
     }
-    audioSuccess.play();
+    aaudioSuccess.play().catch(() => console.log("Sem áudio"));
     setFeedback({ tipo: "ok", msg: "Mandou bem!", emoji: "🎉" });
   };
 
